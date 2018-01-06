@@ -233,5 +233,71 @@ class Transpiler extends React.Component {
     )
   }
 }
+class AppChildren extends React.Component {
+  render() {
+    return (
+      <Parent>
+      <button value="A">A</button>
+      <button value="B">B</button>
+      <button value="C">C</button>
+      </Parent>
+      )
+  }
+}
+class Parent extends React.Component {
+  constructor() {
+    super();
+    this.state = {selected: 'None'}
+  }
+  selectItem(selected) {
+    this.setState({selected})
+  }
+  render() {
+    let fn = child => React.cloneElement(child, {
+      onClick: this.selectItem.bind(this,child.props.value)
+    })
+    let items = React.Children.map(this.props.children,fn); 
+    return (
+      <div>
+      <h2>You have selected {this.state.selected} </h2>
+      {items}
+      </div>
+      )
+  }
+}
+class NumInput extends React.Component {
+  render() {
+    let label = this.props.label!=="" ? <label>{this.props.label} - {this.props.val}</label> : ""
+    return (
+      <div>
+      <input ref="inp"
+      type={this.props.type}
+      min={this.props.min}
+      max={this.props.max}
+      step={this.props.step}
+      defaultValue={this.props.val}
+      onChange={this.props.update} />
+      {label}
+      </div>
+      )
+    }
+}
+NumInput.propTypes = {
+  min: PropTypes.number,
+  max: PropTypes.number,
+  step: PropTypes.number,
+  val: PropTypes.number,
+  label: PropTypes.string,
+  update: PropTypes.func,
+  type: PropTypes.oneOf(['number','range'])
+}
+NumInput.defaultProps = {
+  min: 0,
+  max: 0,
+  step: 1,
+  val: 0,
+  label: "",
+  type: "range"
+}
 //const App = () => <h1>Stateless component</h1>
-export default Transpiler
+export default NumInput
